@@ -2,8 +2,9 @@ name: Lint
 
 on:
   push:
-    branches:
-      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
 
 jobs:
   lint-commit-msg:
@@ -16,8 +17,11 @@ jobs:
           node-version: 22.16.0
       - name: Install deps
         run: npm install
-      - name: Lint commit message
-        run: npx commitlint --last --verbose
+      - name: Lint all commit messages in push
+        run: |
+          for sha in $(git rev-list ${{ github.event.before }}..${{ github.sha }}); do
+            git show -s --format=%B $sha | npx commitlint
+          done
 
   lint-code:
     runs-on: [ubuntu-latest]
