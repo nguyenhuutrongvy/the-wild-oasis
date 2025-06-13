@@ -17,11 +17,8 @@ jobs:
           node-version: 22.16.0
       - name: Install deps
         run: npm install
-      - name: Lint all commit messages in push
-        run: |
-          for sha in $(git rev-list ${{ github.event.before }}..${{ github.sha }}); do
-            git show -s --format=%B $sha | npx commitlint
-          done
+      - name: Lint commit message
+        run: npx commitlint --last --verbose
 
   lint-code:
     runs-on: [ubuntu-latest]
