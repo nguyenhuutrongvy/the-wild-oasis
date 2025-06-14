@@ -1,7 +1,7 @@
 import { Cabin } from "../types/Cabin";
-import { CabinDTO } from "../types/CabinDTO";
+import { CabinApi } from "../types/CabinApi";
 
-export function mapCabinToCabinDTO(cabin: Cabin): CabinDTO {
+export function mapCabinApiToCabin(cabin: CabinApi): Cabin {
   return {
     id: cabin.id,
     createdAt: cabin.created_at,

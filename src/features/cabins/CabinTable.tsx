@@ -2,9 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 import styled from "styled-components";
 
 import { getCabins } from "../../services/apiCabins";
-import { Cabin } from "../../types/Cabin";
+import { CabinApi } from "../../types/CabinApi";
 import Spinner from "../../ui/Spinner";
-import { mapCabinToCabinDTO } from "../../utils/mappers";
+import { mapCabinApiToCabin } from "../../utils/mappers";
 
 import CabinRow from "./CabinRow";
 
@@ -38,7 +38,7 @@ function CabinTable() {
     // error,
     data: cabins,
   } = useQuery({
-    queryKey: ["cabin"],
+    queryKey: ["cabins"],
     queryFn: getCabins,
   });
 
@@ -56,8 +56,8 @@ function CabinTable() {
         <div>Discount</div>
         <div></div>
       </TableHeader>
-      {cabins?.map((cabin: Cabin) => (
-        <CabinRow cabin={mapCabinToCabinDTO(cabin)} key={cabin.id} />
+      {cabins?.map((cabin: CabinApi) => (
+        <CabinRow cabin={mapCabinApiToCabin(cabin)} key={cabin.id} />
       ))}
     </Table>
   );
