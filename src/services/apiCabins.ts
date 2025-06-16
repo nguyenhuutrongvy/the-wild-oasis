@@ -1,3 +1,4 @@
+import { CabinDTO } from "../types/CabinDTO";
 import supabase from "../utils/supabase";
 
 export async function getCabins() {
@@ -6,6 +7,17 @@ export async function getCabins() {
   if (error) {
     console.error(error);
     throw new Error("Cabins could not be loaded");
+  }
+
+  return data;
+}
+
+export async function createCabin(newCabin: CabinDTO) {
+  const { data, error } = await supabase.from("cabins").insert([newCabin]);
+
+  if (error) {
+    console.error(error);
+    throw new Error("Cabin could not be created");
   }
 
   return data;
