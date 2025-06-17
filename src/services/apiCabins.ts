@@ -13,7 +13,31 @@ export async function getCabins() {
 }
 
 export async function createCabin(newCabin: CabinDTO) {
-  const { data, error } = await supabase.from("cabins").insert([newCabin]);
+  const imageName = `${Math.random()}-${newCabin.image?.name}`.replace(
+    /\//g,
+    "",
+  );
+
+  const imagePath = `${import.meta.env.VITE_SUPABASE_URL}/${
+    import.meta.env.VITE_SUPABASE_STORAGE_IMAGE_PATH
+  }/${imageName}`;
+
+  // 1. Upload image
+  const { error: storageError } = await supabase.storage
+    .from("cabin-images")
+    .upload(imageName, newCabin.image!);
+
+  if (storageError) {
+    console.error(storageError);
+    throw new Error(
+      "Cabin image could not be uploaded and the cabin was not created",
+    );
+  }
+
+  // 2. Create a new cabin
+  const { data, error } = await supabase
+    .from("cabins")
+    .insert([{ ...newCabin, image: imagePath }]);
 
   if (error) {
     console.error(error);

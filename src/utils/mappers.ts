@@ -25,5 +25,6 @@ export function mapCabinFormInputToCabinDTO(
     regular_price: cabinFormInput.regularPrice,
     discount: cabinFormInput.discount,
     description: cabinFormInput.description,
+    image: cabinFormInput.image.item(0),
   };
 }

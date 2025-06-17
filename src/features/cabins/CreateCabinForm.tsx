@@ -17,6 +17,7 @@ export interface CabinFormInput {
   regularPrice: number;
   discount: number;
   description: string;
+  image: FileList;
 }
 
 function CreateCabinForm() {
@@ -126,7 +127,13 @@ function CreateCabinForm() {
       </FormRow>
 
       <FormRow label="Cabin photo">
-        <FileInput id="image" accept="image/*" />
+        <FileInput
+          id="image"
+          {...register("image", {
+            required: "This field is required",
+          })}
+          accept="image/*"
+        />
       </FormRow>
 
       <FormRow>
