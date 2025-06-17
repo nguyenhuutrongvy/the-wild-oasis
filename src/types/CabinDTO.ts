@@ -4,5 +4,5 @@ export type CabinDTO = {
   regular_price: number;
   discount: number;
   description: string;
-  image: File | null;
+  image: File | null | string;
 };

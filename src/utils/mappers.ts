@@ -25,6 +25,9 @@ export function mapCabinFormInputToCabinDTO(
     regular_price: cabinFormInput.regularPrice,
     discount: cabinFormInput.discount,
     description: cabinFormInput.description,
-    image: cabinFormInput.image.item(0),
+    image:
+      typeof cabinFormInput.image === "string"
+        ? cabinFormInput.image
+        : cabinFormInput.image.item(0),
   };
 }
