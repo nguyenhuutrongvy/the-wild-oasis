@@ -1,10 +1,6 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
-import toast from "react-hot-toast";
 
-import { createEditCabin } from "../../services/apiCabins";
 import { Cabin } from "../../types/Cabin";
-import { CabinDTO } from "../../types/CabinDTO";
 import Button from "../../ui/Button";
 import FileInput from "../../ui/FileInput";
 import Form from "../../ui/Form";
@@ -12,6 +8,9 @@ import FormRow from "../../ui/FormRow";
 import Input from "../../ui/Input";
 import Textarea from "../../ui/Textarea";
 import { mapCabinFormInputToCabinDTO } from "../../utils/mappers";
+
+import { useCreateCabin } from "./useCreateCabin";
+import { useEditCabin } from "./useEditCabin";
 
 export interface CabinFormInput {
   name: string;
@@ -23,6 +22,9 @@ export interface CabinFormInput {
 }
 
 function CreateCabinForm({ cabinToEdit }: { cabinToEdit?: Cabin }) {
+  const { isCreating, createCabin } = useCreateCabin();
+  const { isEditing, editCabin } = useEditCabin();
+
   const isEditSession = Boolean(cabinToEdit?.id);
 
   const {
@@ -35,47 +37,29 @@ function CreateCabinForm({ cabinToEdit }: { cabinToEdit?: Cabin }) {
     defaultValues: isEditSession ? cabinToEdit : {},
   });
 
-  const queryClient = useQueryClient();
-
-  const { mutate: createCabin, isLoading: isCreating } = useMutation({
-    mutationFn: createEditCabin,
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["cabins"],
-      });
-      reset();
-
-      toast.success("New cabin successfully created");
-    },
-    onError: (err: Error) => toast.error(err.message),
-  });
-
-  const { mutate: editCabin, isLoading: isEditing } = useMutation({
-    mutationFn: ({ cabin, id }: { cabin: CabinDTO; id: number }) =>
-      createEditCabin(cabin, id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["cabins"],
-      });
-      reset();
-
-      toast.success("Cabin successfully edited");
-    },
-    onError: (err: Error) => toast.error(err.message),
-  });
-
   const isWorking = isCreating || isEditing;
 
   const onSubmit: SubmitHandler<CabinFormInput> = (data) => {
     const mappedValue = mapCabinFormInputToCabinDTO(data);
 
     if (isEditSession) {
-      editCabin({
-        cabin: mappedValue,
-        id: cabinToEdit!.id,
-      });
+      editCabin(
+        {
+          cabin: mappedValue,
+          id: cabinToEdit!.id,
+        },
+        {
+          onSuccess: () => {
+            reset();
+          },
+        },
+      );
     } else {
-      createCabin(mappedValue);
+      createCabin(mappedValue, {
+        onSuccess: () => {
+          reset();
+        },
+      });
     }
   };
 

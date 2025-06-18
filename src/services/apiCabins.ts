@@ -1,3 +1,5 @@
+import { PostgrestError } from "@supabase/supabase-js";
+
 import { CabinDTO } from "../types/CabinDTO";
 import supabase from "../utils/supabase";
 
@@ -42,6 +44,8 @@ export async function createEditCabin(newCabin: CabinDTO, id?: number) {
     }
   }
 
+  let result, errors: PostgrestError | null;
+
   // 2. Create/ Edit cabin
   if (!id) {
     // A. Create a new cabin
@@ -51,12 +55,8 @@ export async function createEditCabin(newCabin: CabinDTO, id?: number) {
       .select()
       .single();
 
-    if (error) {
-      console.error(error);
-      throw new Error("Cabin could not be created");
-    }
-
-    return data;
+    result = data;
+    errors = error;
   } else {
     // B. Update an existing cabin
     const { data, error } = await supabase
@@ -66,13 +66,16 @@ export async function createEditCabin(newCabin: CabinDTO, id?: number) {
       .select()
       .single();
 
-    if (error) {
-      console.error(error);
-      throw new Error("Cabin could not be created");
-    }
-
-    return data;
+    result = data;
+    errors = error;
   }
+
+  if (errors) {
+    console.error(errors);
+    throw new Error("Something went wrong");
+  }
+
+  return result;
 }
 
 export async function deleteCabin(id: number) {
