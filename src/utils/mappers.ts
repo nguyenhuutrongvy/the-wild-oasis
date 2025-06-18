@@ -31,3 +31,14 @@ export function mapCabinFormInputToCabinDTO(
         : cabinFormInput.image.item(0),
   };
 }
+
+export function mapCabinToCabinDTO(cabin: Cabin): CabinDTO {
+  return {
+    name: cabin.name,
+    max_capacity: cabin.maxCapacity,
+    regular_price: cabin.regularPrice,
+    discount: cabin.discount,
+    description: cabin.description,
+    image: cabin.image,
+  };
+}
