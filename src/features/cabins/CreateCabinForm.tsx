@@ -10,7 +10,7 @@ import Textarea from "../../ui/Textarea";
 import { mapCabinFormInputToCabinDTO } from "../../utils/mappers";
 
 import { useCreateCabin } from "./useCreateCabin";
-import { useEditCabin } from "./useEditCabin";
+import { useUpdateCabin } from "./useUpdateCabin";
 
 export interface CabinFormInput {
   name: string;
@@ -23,7 +23,7 @@ export interface CabinFormInput {
 
 function CreateCabinForm({ cabinToEdit }: { cabinToEdit?: Cabin }) {
   const { isCreating, createCabin } = useCreateCabin();
-  const { isEditing, editCabin } = useEditCabin();
+  const { isUpdating, updateCabin } = useUpdateCabin();
 
   const isEditSession = Boolean(cabinToEdit?.id);
 
@@ -37,13 +37,13 @@ function CreateCabinForm({ cabinToEdit }: { cabinToEdit?: Cabin }) {
     defaultValues: isEditSession ? cabinToEdit : {},
   });
 
-  const isWorking = isCreating || isEditing;
+  const isWorking = isCreating || isUpdating;
 
   const onSubmit: SubmitHandler<CabinFormInput> = (data) => {
     const mappedValue = mapCabinFormInputToCabinDTO(data);
 
     if (isEditSession) {
-      editCabin(
+      updateCabin(
         {
           cabin: mappedValue,
           id: cabinToEdit!.id,
