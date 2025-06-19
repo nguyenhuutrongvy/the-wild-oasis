@@ -2,6 +2,8 @@ import { CabinFormInput } from "../features/cabins/CreateCabinForm";
 import { Cabin } from "../types/Cabin";
 import { CabinApi } from "../types/CabinApi";
 import { CabinDTO } from "../types/CabinDTO";
+import { Setting } from "../types/Setting";
+import { SettingApi } from "../types/SettingApi";
 
 export function mapCabinApiToCabin(cabinApi: CabinApi): Cabin {
   return {
@@ -40,5 +42,16 @@ export function mapCabinToCabinDTO(cabin: Cabin): CabinDTO {
     discount: cabin.discount,
     description: cabin.description,
     image: cabin.image,
+  };
+}
+
+export function mapSettingApiToSetting(settingApi: SettingApi): Setting {
+  return {
+    id: settingApi.id,
+    createdAt: settingApi.created_at,
+    minBookingLength: settingApi.min_booking_length,
+    maxBookingLength: settingApi.max_booking_length,
+    maxGuestsPerBooking: settingApi.max_guests_per_booking,
+    breakfastPrice: settingApi.breakfast_price,
   };
 }
